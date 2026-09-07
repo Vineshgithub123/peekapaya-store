@@ -56,11 +56,13 @@ Do not edit the Liquid theme. Use it to reproduce the active storefront in Hydro
 ## Current environment
 
 - Hydrogen 2026.4 with React Router 7 and TypeScript is installed.
-- The app currently uses Shopify Mock Shop because a real Headless storefront has not been linked.
+- The app is linked to the real `Peekapaya-store` Hydrogen storefront and its Production environment variables have been pulled into the ignored local `.env`.
 - Shopify CLI authentication is complete for the Peekapaya shop at `0euczz-c8.myshopify.com`.
-- The store does not yet have Shopify's Hydrogen sales channel installed. This blocks storefront creation/linking and environment retrieval until the merchant approves the channel installation in Shopify Admin.
-- `.env` contains the local session secret. Never print or commit secrets.
-- Customer Account API credentials are not present in Mock Shop.
+- Storefront API and Customer Account API credentials are present. Never print or commit `.env`.
+- Shopify did not provide `PUBLIC_CHECKOUT_DOMAIN`; the live cart still returns the correct `peekapaya.com` checkout URL.
+- Customer Account development callbacks require `npm run dev -- --customer-account-push`, which creates a temporary secure `tryhydrogen.dev` tunnel and registers it with Shopify.
+- Exact `quantityAvailable` and product inventory counts are denied because the storefront lacks `unauthenticated_read_product_inventory`. Current UI and cart enforcement use `availableForSale`, which is working.
+- A stale Mock Shop server on port 3010 caused the profile fallback and `demostore.hydrogen.mock.shop/checkout-unavailable` page. That server was stopped. `validateShopifyEnvironment` now prevents the app from silently starting with Mock Shop or without the required Storefront and Customer Account variables.
 - The parent Liquid-theme repository excludes `hydrogen-storefront/` through its local `.gitignore`; `.gitignore` and `.shopifyignore` remain untracked in the parent and should be committed there when appropriate.
 - Shopify CLI may emit non-failing warnings for deprecated `envFile`, React Router v8 future flags, and the Hydrogen bundle analyzer.
 
@@ -165,18 +167,16 @@ Recent cart files include:
 
 ## Exact next work
 
-Connect the application to the real Shopify Hydrogen storefront and validate the core commerce workflow before doing more page or visual work.
+Finish interactive acceptance of the real Shopify checkout and Customer Account workflows before doing more page or visual work.
 
 Recommended implementation order:
 
-1. Install Shopify's official Hydrogen sales channel on `0euczz-c8.myshopify.com`; its installation page has been opened for merchant approval.
-2. Create or select the Hydrogen storefront in that sales channel, then run `npx shopify hydrogen link` and `npx shopify hydrogen env pull`.
-3. Confirm the required products and collections are published to that storefront's sales channel.
-4. Push Customer Account API development callback configuration and verify the pulled customer-account environment variables.
-5. Run the app with real data and test product discovery, options, inventory, cart mutations/persistence, discounts, and the Shopify checkout URL.
-6. Verify that the Shopify-hosted checkout presents the store's existing Razorpay payment method. Do not add a separate Razorpay SDK or collect payment details in Hydrogen.
-7. Test customer login, callback, profile, addresses, orders, order detail, and logout.
-8. Record every live-data/API defect, fix workflow defects first, and rerun Shopify validation, lint, typecheck, build, and affected workflows.
+1. In the opened Shopify checkout, confirm the product, price, shipping/tax behavior, and existing Razorpay payment method. Do not submit a paid order unless the merchant intentionally wants a test order.
+2. In the opened secure Customer Account page, complete login and verify the authorization callback returns to Hydrogen.
+3. Test profile, addresses, orders, order detail, and logout with a real customer account.
+4. Supply a valid test discount code and verify its accepted state in the Hydrogen cart and Shopify checkout.
+5. Decide whether exact inventory quantities must be displayed. If so, enable `unauthenticated_read_product_inventory` for the Hydrogen storefront and rerun codegen/API validation; availability and cart enforcement already work without it.
+6. Record every live-data/API defect, fix workflow defects first, and rerun Shopify validation, lint, typecheck, build, and affected workflows.
 
 Gift-card recipient and Shop Pay live verification are outside the required migration scope. Resume FAQ, Contact, remaining content pages, footer, and visual polish only after the commerce workflow acceptance checks pass.
 
@@ -247,6 +247,6 @@ Check every affected route and mutation, then stop only the temporary server cre
 
 ## State at this handoff
 
-Shopify CLI authentication is now saved and the accessible Peekapaya store was confirmed as `0euczz-c8.myshopify.com`. `shopify hydrogen list` currently stops because the Hydrogen sales channel is not installed. The official channel installation page was opened; resume by completing that merchant-approved installation, then list/create/link the storefront and pull its environment. The About Us page remains the most recently completed code slice and passed Shopify validation, ESLint, TypeScript, the Oxygen production build, and its local route check. No deployment, domain change, repository split, commit, or destructive operation was performed.
+The application is linked to `Peekapaya-store`, and all required Storefront and Customer Account variables except optional `PUBLIC_CHECKOUT_DOMAIN` were pulled successfully. A secure development tunnel registered the Customer Account callback and logout origins. Live checks returned 26 products, 9 collections, 130 variants, and 7 unavailable variants; Hydrogen disables an unavailable option correctly. Real cart add, persistence, quantity 1-to-2 update, removal, empty restoration, and checkout URL generation passed. An isolated 999,999-unit cart request was capped to 3 with Shopify's `MERCHANDISE_NOT_ENOUGH_STOCK` warning. A stale Mock Shop process that caused the unavailable account/checkout behavior was stopped, and startup validation now rejects Mock Shop configuration. Lint, TypeScript, and the Oxygen production build pass. The secure Customer Account login and Shopify checkout still require interactive acceptance. Exact quantity fields require the currently missing `unauthenticated_read_product_inventory` scope. No paid order, deployment, or domain change was performed.
 
 Before starting new code, inspect the current filesystem instead of assuming this document is newer than the implementation. Update this file whenever the resume point changes.

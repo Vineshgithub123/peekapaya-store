@@ -108,21 +108,24 @@ This is a living implementation checklist for moving the Liquid theme into Hydro
 - [ ] Match global buttons, inputs, drawers, dialogs, focus rings, typography scale, and content width
 - [ ] Complete keyboard, screen-reader, responsive, reduced-motion, performance, and SEO review
 
-## Live Shopify connection pending
+## Live Shopify connection
 
-- [ ] Create or select the Headless sales channel storefront in Shopify Admin
-- [ ] Run `npx shopify hydrogen link` and `npx shopify hydrogen env pull`
-- [ ] Confirm products and collections are published to the Headless sales channel
+- [x] Create or select the Hydrogen sales channel storefront in Shopify Admin
+- [x] Link `Peekapaya-store` and pull its Production environment variables
+- [x] Confirm published Storefront API data is available: 26 products, 9 collections, and 130 variants
 - [ ] Replace fixture content with the required Shopify fields and metafields
 - [ ] Verify product prices, variants, inventory, discounts, cart, and Shopify-hosted checkout
-- [ ] Configure and verify Customer Account API callback URLs
+- [x] Configure and verify Customer Account API callback/logout URLs through the secure development tunnel
+- [x] Reject missing live credentials and Mock Shop configuration during application startup
 - [ ] Deploy an Oxygen preview and complete workflow testing before switching domains
 
 ### Required real-store workflow acceptance
 
-- [ ] Confirm real products, collections, images, prices, variants, availability, and inventory are returned by the Storefront API
-- [ ] Confirm collection navigation, audience filtering, search, product selection, and unavailable-variant handling with live data
-- [ ] Confirm add, update, remove, persistence, discount, and inventory-error behavior in the live Shopify cart
+- [x] Confirm real products, collections, images, prices, variants, and availability are returned by the Storefront API
+- [x] Confirm collection navigation, audience filtering, search, product selection, and unavailable-variant handling with live data
+- [x] Confirm add, update, remove, persistence, and inventory-error behavior in the live Shopify cart
+- [ ] Verify an accepted live discount code in the cart and checkout
+- [ ] Enable `unauthenticated_read_product_inventory` only if the storefront must display exact inventory quantities
 - [ ] Confirm the cart checkout URL opens Shopify-hosted checkout with shipping, taxes, discounts, and Razorpay from the existing Shopify configuration
 - [ ] Confirm customer login, authorization callback, profile, addresses, orders, order details, and logout with the Customer Account API
 

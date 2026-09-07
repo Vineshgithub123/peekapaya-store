@@ -27,6 +27,8 @@ The user will perform the final visual and workflow testing. Do not create the s
 - Repository root: `C:\My Proj\Netset-shop`
 - Existing Liquid theme: repository root
 - Migrated application: `C:\My Proj\Netset-shop\hydrogen-storefront`
+- The migrated application is now an independent Git repository on `main` with remote `https://github.com/Vineshgithub123/peekapaya-store.git`.
+- Initial repository commit `e1b8385` is present on `origin/main`; 136 required source, configuration, documentation, and asset files are tracked.
 - Migration plan: `hydrogen-storefront/MIGRATION_PLAN.md`
 - Detailed checklist: `hydrogen-storefront/MIGRATION_CHECKLIST.md`
 - Hydrogen instructions: `hydrogen-storefront/AGENTS.md`
@@ -59,7 +61,7 @@ Do not edit the Liquid theme. Use it to reproduce the active storefront in Hydro
 - The store does not yet have Shopify's Hydrogen sales channel installed. This blocks storefront creation/linking and environment retrieval until the merchant approves the channel installation in Shopify Admin.
 - `.env` contains the local session secret. Never print or commit secrets.
 - Customer Account API credentials are not present in Mock Shop.
-- Parent Git currently reports `.shopifyignore` and the entire `hydrogen-storefront/` directory as untracked. Do not discard these files.
+- The parent Liquid-theme repository excludes `hydrogen-storefront/` through its local `.gitignore`; `.gitignore` and `.shopifyignore` remain untracked in the parent and should be committed there when appropriate.
 - Shopify CLI may emit non-failing warnings for deprecated `envFile`, React Router v8 future flags, and the Hydrogen bundle analyzer.
 
 ## Shopify tooling requirement
